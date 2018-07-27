@@ -1,0 +1,116 @@
+<html>
+
+<head>
+
+  <title>Assignment4</title>
+  <style type="text/css">
+  .food{
+    width: 50%;
+    height: 40%;
+  }
+  </style>
+
+  
+</head>
+
+<body>
+  <h1> The reuslts are showing inside the console !!</h1>
+  <h2> This progaram is trying to run BFS and DFS to analyze the constructor of the source HTML </h2>
+  <div class="root">
+    <div class="container">
+      <section class="sidebar">
+        <ul class="menu"></ul>
+      </section>
+      <div class="main">
+        <article class="post"></article>
+        <p class="copyright"> </p>
+    </div>
+    </div>
+    <div class="trashbin">
+      <div class="trash">
+        <ol class="livingtrash"></ol>
+        <img src="WechatIMG69.jpeg" class="food">This is showing the constructor of HTML</img>
+      </div>
+      <section class="recycle">
+        <p class="bottle"></p>
+        <p class="box"></p>
+      </section>
+
+
+    </div>
+  </div>
+
+
+  
+  <script type="text/javascript">
+  // Source html code to be run by the DFS and BFS algorithm
+
+    const DFSTraverse = (rootNodes, rootLayer) => {
+      const roots = Array.from(rootNodes) //creat an arraylist for the same layer nodes
+      while (roots.length) { 
+        /* this step will detect nodes to run the iteration 
+        if there are two nodes on the same layer, the iteration  will run for the first node
+        after visiting the last node in that branch
+        it will move to next branch which inside the root arraylist.
+        the condition for this step should be "root.length > 0" 
+        when the length >1, the while iteration  will run to visit.
+        */
+        const root = roots.shift() //take out the fist value inside roots arraylist
+        Infolayer(root, rootLayer)
+        // If there have children nodes , it will visit all children nodes and the  will also increase one layer.
+          DFSTraverse(root.children, rootLayer + 1)
+        }
+      }
+    
+
+
+    const BFSTraverse = (rootNodes, rootLayer) => {
+      const roots = Array.from(rootNodes)
+      const Layers = [] // using an empty arraylist to store the layer of each node. 
+      // Initialize
+      for (let i = 0; i < roots.length; i++) {
+        Layers.push(rootLayer)
+      }
+      var rootNu = 0 // To record which layer is processing
+
+      while (roots.length) {
+        const root = roots.shift() 
+        /*to figure out whether the queue  still have nodes,if have it will "shift" out the first node
+        and put into Infolayer 
+        */
+        Infolayer(root, Layers[rootNu])
+        
+        if (root.children.length) {
+          // if there have any children nodes, this step will put children nodes into roots
+          Array.prototype.push.apply(roots, Array.from(root.children))
+          // the layer number will add 1 to get the children nodes layer number
+          rootLayer = Layers[rootNu] + 1
+          //add children layer into layer list
+          for (let i = 0; i < root.children.length; i++) {
+            Layers.push(rootLayer)
+          }
+        }
+        // process the next node
+        rootNu++
+      }
+    }
+
+    // log the information of each layer and node
+    
+    const Infolayer = (node, layer) => {
+      
+      console.log(`(${layer})    --->>   (${node.tagName}) .${node.className}`);
+    }
+
+    console.log('#############  BFS  #################');
+    BFSTraverse(document.querySelectorAll('.root'), 1);
+    console.log('#############  DFS  #################');
+    DFSTraverse(document.querySelectorAll('.root'), 1);
+
+
+
+  </script>
+
+</body>
+
+</html>
